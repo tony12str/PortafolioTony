@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de archivos</title>
+</head>
+<body>
+  <h1 style="background-color: #4CAF50; color: white; padding: 10px;">Gestión de archivos</h1>
+  
+  <h2 style="background-color: #2196F3; color: white; padding: 8px;">Seleccionar para mostrar inmediatamente</h2>
+  <p style="background-color: #E3F2FD; padding: 10px;">Selecciona el archivo a mostrar</p>
+  <input type="file" id="archivo1" />
+  <h4 style="background-color: #BBDEFB; padding: 8px;">Contenido del archivo:</h4>
+  <pre id="contenido-archivo" style="background-color: #E3F2FD; padding: 10px;"></pre>
+  <hr/>
+  
+
+  <h2 style="background-color: #FFC107; color: white; padding: 8px;">Seleccionar para procesar y luego mostrar en tabla</h2>
+  <p style="background-color: #FFF8E1; padding: 10px;">Selecciona el archivo a gestionar</p>
+  <input type="file" id="archivo2" />
+  <h4 style="background-color: #FFECB3; padding: 8px;">Contenido del archivo:</h4>
+  <div id="tablares" style="background-color: #FFF8E1; padding: 10px;"></div>
+  <hr/>
+
+  <h2 style="background-color: #FF5722; color: white; padding: 8px;">Exportar texto a un archivo</h2>
+  <p style="background-color: #FFCCBC; padding: 10px;">Escribe para exportar</p>
+  <input type="text" id="texto-archivo" />
+  <button id="exportar" style="background-color: #D84315; color: white; border: none; padding: 8px 12px; cursor: pointer;">Exportar</button>
+  <hr/>
+<script>
+    /**
+    * Exportar
+    **/
+    function exportar (data, fileName) {
+      const a = document.createElement("a");
+      const contenido = data,
+          blob = new Blob([contenido], {type: "octet/stream"}),
+          url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+    };
+
+    document.querySelector('#exportar').onclick = function () {
+      const data = document.querySelector('#texto-archivo').value;
+      const nombreArchivo = 'ejemploDSM.txt'
+      exportar(data, nombreArchivo);
+    }
+
+    /**
+    * Importar y operar con .csv
+    **/
+    function crearTabla(data) {
+      const todasFilas = data.split(/\r?\n|\r/);
+      let tabla = '<table>';
+      for (let fila = 0; fila < todasFilas.length; fila++) {
+        if (fila === 0) {
+          tabla += '<thead>';
+          tabla += '<tr>';
+        } else {
+          tabla += '<tr>';
+        }
+        const celdasFila = todasFilas[fila].split(',');
+        for (let rowCell = 0; rowCell < celdasFila.length; rowCell++) {
+          if (fila === 0) {
+            tabla += '<th>';
+            tabla += celdasFila[rowCell];
+            tabla += '</th>';
+          } else {
+            tabla += '<td>';
+            if (rowCell === 3) {
+              tabla += '<img src="'+celdasFila[rowCell]+'">';
+            } else {
+              tabla += celdasFila[rowCell];
+            }
+            tabla += '</td>';
+          }
+        }
+        if (fila === 0) {
+          tabla += '</tr>';
+          tabla += '</thead>';
+          tabla += '<tbody>';
+        } else {
+          tabla += '</tr>';
+        }
+      } 
+      tabla += '</tbody>';
+      tabla += '</table>';
+      document.querySelector('#tablares').innerHTML = tabla;
+    }
+
+    function leerArchivo2(evt) {
+      let file = evt.target.files[0];
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        // Cuando el archivo se terminó de cargar
+        crearTabla(e.target.result)
+      };
+      // Leemos el contenido del archivo seleccionado
+      reader.readAsText(file);
+    }
+    document.querySelector('#archivo2')
+      .addEventListener('change', leerArchivo2, false);
+
+
+    /**
+     * Leer y mostrar contenido inmediatamente
+    **/  
+    function mostrarContenido(contenido) {
+        const elemento = document.getElementById('contenido-archivo');
+        elemento.innerHTML = contenido;
+      }
+    function leerArchivo(e) {
+      const archivo = e.target.files[0];
+      if (!archivo) {
+        return;
+      }
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const contenido = e.target.result;
+        mostrarContenido(contenido);
+      };
+      lector.readAsText(archivo);
+    }
+
+    document.querySelector('#archivo1')
+      .addEventListener('change', leerArchivo, false);
+  </script>
+</body>
+</html>

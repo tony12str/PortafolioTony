@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js - Modern Style</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e1e, #121212);
+            color: white;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .menu {
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        }
+        .menu a {
+            display: block;
+            padding: 12px;
+            margin: 8px auto;
+            width: 220px;
+            background: hsl(194, 74%, 35%);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .menu a:hover {
+            background: #007bbf;
+        }
+        .led-text {
+            font-size: 20px;
+            color: #ffcc00;
+            margin-top: 20px;
+            text-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+        }
+        .chart-container {
+            display: none;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        }
+        .chart-container canvas {
+            max-width: 500px;
+        }
+        .back-btn {
+            display: block;
+            margin-top: 15px;
+            padding: 10px;
+            width: 200px;
+            background: #ff4b4b;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background: #d12e2e;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="menu">
+        <h1>Seleccionar Gráfico</h1>
+        <a href="#" onclick="showChart(1)">Gráfico (1)</a>
+        <a href="#" onclick="showChart(2)">Gráfico (2)</a>
+        <a href="#" onclick="showChart(3)">Gráfico (3)</a>
+        <a href="#" onclick="showChart(4)">Gráfico (4)</a>
+        <a href="#" onclick="showChart(5)">Gráfico (5)</a>
+    </div>
+    
+    <div id="chart1" class="chart-container">
+        <canvas id="myChart1"></canvas>
+        <a href="#" onclick="showMenu()" class="back-btn">+Regresar--</a>
+    </div>
+    <div id="chart2" class="chart-container">
+        <canvas id="myChart2"></canvas>
+        <a href="#" onclick="showMenu()" class="back-btn">+Regresar</a>
+    </div>
+    <div id="chart3" class="chart-container">
+        <canvas id="myChart3"></canvas>
+        <a href="#" onclick="showMenu()" class="back-btn">+Regresar</a>
+    </div>
+    <div id="chart4" class="chart-container">
+        <canvas id="myChart4"></canvas>
+        <a href="#" onclick="showMenu()" class="back-btn">+Regresar</a>
+    </div>
+    <div id="chart5" class="chart-container">
+        <canvas id="myChart5"></canvas>
+        <a href="#" onclick="showMenu()" class="back-btn">+Regresar</a>
+    </div>
+
+    <div class="led-text">Antonio Martinez Andrade - DSM-51</div>
+
+    <script>
+        let chartInstances = {}; 
+
+        function showChart(num) {
+            document.querySelector('.menu').style.display = 'none';
+            document.querySelectorAll('.chart-container').forEach(el => el.style.display = 'none');
+            document.getElementById('chart' + num).style.display = 'block';
+            renderChart(num);
+        }
+        
+        function showMenu() {
+            document.querySelector('.menu').style.display = 'block';
+            document.querySelectorAll('.chart-container').forEach(el => el.style.display = 'none');
+        }
+
+        function renderChart(num) {
+            let canvas = document.getElementById('myChart' + num);
+            let ctx = canvas.getContext('2d');
+
+            if (chartInstances[num]) {
+                chartInstances[num].destroy();
+            }
+
+            chartInstances[num] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['DSM', 'IRD', 'BD', 'IOT', 'JS'],
+                    datasets: [{
+                        label: 'Datos de ejemplo',
+                        data: [12, 19, 3, 5, 2],
+                        backgroundColor: ['#ff4757', '#1e90ff', '#2ed573', '#ffcc00', '#ff6b81'],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
